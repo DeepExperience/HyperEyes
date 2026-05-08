@@ -4,6 +4,12 @@
 
 > *Search wider, not longer.*
 
+**Authors:** Guankai Li¹†‡, Jiabin Chen¹†, Yi Xu², Xichen Zhang¹, Yuan Lu¹\*
+
+¹ Xiaohongshu Inc.   ² University of Cambridge
+
+<sub>† Equal Contributor &nbsp;&nbsp; ‡ Project Lead &nbsp;&nbsp; \* Corresponding author: Yuan Lu (`luyuan2@xiaohongshu.com`)</sub>
+
 HyperEyes is a **parallel multimodal search agent** that fuses visual grounding and retrieval into a single atomic action, enabling concurrent search across multiple entities while treating inference efficiency as a first-class training objective.
 
 <p align="center">
@@ -100,11 +106,13 @@ Each instance features a multi-entity image paired with a question that **strict
 If you find HyperEyes useful for your research, please consider citing:
 
 ```bibtex
-@article{hypereyes2026,
-  title  = {HyperEyes: Dual-Grained Efficiency-Aware Reinforcement Learning for Parallel Multimodal Search Agents},
-  author = {Anonymous},
-  year   = {2026},
-  note   = {Under review}
+@article{li2026hypereyes,
+  title   = {HyperEyes: Dual-Grained Efficiency-Aware Reinforcement Learning for Parallel Multimodal Search Agents},
+  author  = {Li, Guankai and Chen, Jiabin and Xu, Yi and Zhang, Xichen and Lu, Yuan},
+  journal = {arXiv preprint},
+  year    = {2026},
+  note    = {Preprint},
+  url     = {https://github.com/Guankai-Li/HyperEyes}
 }
 ```
 
@@ -112,7 +120,10 @@ If you find HyperEyes useful for your research, please consider citing:
 
 ## 📬 Contact
 
-For questions, suggestions, or collaboration, please open an issue in this repository.
+For questions, suggestions, or collaboration, please open an issue in this repository, or reach out via email:
+
+- **Yuan Lu** (corresponding author) — [`luyuan2@xiaohongshu.com`](mailto:luyuan2@xiaohongshu.com)
+- **Guankai Li** — [`liguankai@xiaohongshu.com`](mailto:liguankai@xiaohongshu.com)
 
 ---
 
