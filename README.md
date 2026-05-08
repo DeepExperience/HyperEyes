@@ -7,7 +7,7 @@
 HyperEyes is a **parallel multimodal search agent** that fuses visual grounding and retrieval into a single atomic action, enabling concurrent search across multiple entities while treating inference efficiency as a first-class training objective.
 
 <p align="center">
-  <img src="figures/Teaser.pdf" alt="HyperEyes Teaser" width="90%"/>
+  <img src="figures/Teaser.png" alt="HyperEyes Teaser" width="90%"/>
 </p>
 
 <p align="center"><i>Comparison between conventional multimodal search agents and HyperEyes. While conventional agents suffer from redundant interaction rounds to process multiple entities, HyperEyes achieves high efficiency by grounding and searching multiple entities concurrently in a single turn.</i></p>
@@ -35,7 +35,7 @@ While parallel tool invocation has emerged in text-based agents, *possessing par
 HyperEyes addresses this with the principle of **"search wider, not longer"**: dispatching multiple grounded queries concurrently within a round, rather than chaining them sequentially.
 
 <p align="center">
-  <img src="figures/parallel_vs_serial.pdf" alt="Parallel vs Serial Search" width="90%"/>
+  <img src="figures/parallel_vs_serial.png" alt="Parallel vs Serial Search" width="90%"/>
 </p>
 
 <p align="center"><i>Parallel multimodal search vs. conventional serial search: HyperEyes dispatches multiple grounded queries concurrently within a single round, drastically reducing interaction rounds and end-to-end latency.</i></p>
@@ -71,35 +71,11 @@ Each instance features a multi-entity image paired with a question that **strict
 
 ## 📈 Main Results
 
-Main results (accuracy % / tool-call turns) on six multimodal search benchmarks. **Bold** = best, <u>underline</u> = second-best. Δ rows show absolute improvement of HyperEyes (HE) over the second-best open-source model under the *Agentic Workflow* setting. "–" denotes unreported results. Accuracy numbers are taken from the original papers, while tool-call turns and metrics missing from the original papers are obtained via local deployment and inference of their open-source models.
+<p align="center">
+  <img src="figures/table2.png" alt="Main Results (Table 2)" width="95%"/>
+</p>
 
-| Model | MMSearch | FVQA | LiveVQA | BCVL | MMSearch+ | IMEB | Avg. |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| ***Direct Answer*** | | | | | | | |
-| Qwen3-VL-30B     | 21.3 / – | 36.7 / – | 35.6 / – | 17.2 / – | 2.1 / –  | 6.7 / –  | 19.8 / – |
-| Qwen3-VL-235B    | 30.3 / – | 44.2 / – | 41.4 / – | 21.8 / – | 6.9 / –  | 12.0 / – | 26.1 / – |
-| Kimi-K2.5        | 65.6 / – | 59.6 / – | 57.3 / – | 27.6 / – | 9.7 / –  | 27.7 / – | 41.2 / – |
-| Claude-Opus-4.6  | 59.8 / – | 60.1 / – | 53.1 / – | 43.5 / – | 13.2 / – | 27.0 / – | 42.8 / – |
-| Gemini-3.1-Pro   | 75.4 / – | 62.7 / – | 51.5 / – | 53.1 / – | 21.0 / – | 40.8 / – | 50.7 / – |
-| ***Agentic Workflow*** | | | | | | | |
-| Qwen3-VL-30B     | 54.1 / 1.7 | 58.0 / 2.0 | 49.8 / 1.9 | 29.0 / 4.4 | 9.7 / 2.8  | 17.7 / 4.3 | 36.4 / 2.7 |
-| Qwen3-VL-235B    | 64.8 / 1.4 | 70.2 / 1.7 | 58.2 / 1.6 | 37.9 / 2.7 | 20.3 / 4.0 | 30.0 / 4.8 | 46.9 / 2.7 |
-| Kimi-K2.5        | 76.6 / 2.2 | 76.5 / 2.5 | 76.6 / 2.1 | 50.3 / 5.1 | 27.8 / 3.1 | **55.3** / 8.8 | 60.5 / 4.0 |
-| Claude-Opus-4.6  | 76.2 / 1.6 | 74.5 / 1.3 | 67.4 / 1.2 | 48.3 / 2.4 | 31.2 / 2.4 | 41.7 / 3.4 | 56.5 / 2.0 |
-| Gemini-3.1-Pro   | 86.1 / 1.2 | **84.0** / 1.3 | 76.6 / 1.4 | **64.1** / 2.0 | **44.2** / 2.9 | 51.3 / 2.1 | **67.7** / 1.8 |
-| ***Multimodal Deep Search Agents*** | | | | | | | |
-| DeepEyes-V2      | 63.7 / 2.1  | 60.6 / 2.8  | 58.0 / 3.7  | 24.8 / 4.3  | 9.5 / 3.9  | 18.0 / 4.7  | 39.1 / 3.6  |
-| MMSearch-R1      | 53.8 / 1.4  | 58.4 / 1.3  | 48.4 / 1.4  | 19.1 / 1.7  | 10.1 / 1.8 | 3.3 / 1.9   | 32.2 / 1.6  |
-| WebWatcher       | 55.3 / 4.8  | 64.3 / 4.0  | 58.7 / 4.1  | 27.0 / 4.9  | 11.5 / 5.7 | 15.3 / 7.8  | 38.7 / 5.2  |
-| VDR              | 69.6 / 11.1 | 74.2 / 12.7 | 77.6 / 10.2 | 53.7 / 11.7 | 28.5 / 11.4| 21.2 / 12.3 | 54.1 / 11.6 |
-| REDSearch        | 72.9 / –    | – / –       | 79.3 / –    | 57.2 / –    | 26.6 / –   | – / –       | – / –       |
-| ***Ours*** | | | | | | | |
-| HE-30B (SFT)     | 82.0 / 1.8 | 76.1 / 2.0 | 80.3 / 1.9 | 47.6 / 3.9 | 25.0 / 3.7 | 42.0 / 3.8 | 58.8 / 2.9 |
-| **HE-30B (RL)**  | <u>86.9</u> / **1.6** | 79.3 / **1.7** | <u>81.6</u> / **1.7** | 57.9 / 2.6 | 31.5 / 2.3 | 46.7 / 3.1 | 64.0 / 2.2 |
-| **Δ**            | **+14.0 / −9.5** | **+5.1 / −11.0** | **+2.3 / −8.5** | **+0.7 / −9.1** | **+3.0 / −9.1** | **+25.5 / −9.2** | **+9.9 / −9.4** |
-| HE-235B (SFT)    | 84.4 / 1.7 | 80.3 / 1.9 | <u>83.7</u> / 2.1 | 54.4 / 3.7 | 31.8 / 3.9 | 50.0 / 3.3 | 64.1 / 2.8 |
-| **HE-235B (RL)** | **88.5** / 1.4 | <u>81.4</u> / 1.5 | **84.1** / 1.5 | <u>60.0</u> / 2.2 | <u>32.6</u> / 2.2 | <u>52.7</u> / 3.0 | <u>66.6</u> / 2.0 |
-| **Δ**            | **+15.6 / −9.7** | **+7.2 / −11.2** | **+4.8 / −8.7** | **+2.8 / −9.5** | **+4.1 / −9.2** | **+31.5 / −9.3** | **+12.5 / −9.6** |
+<p align="center"><i>Main results (accuracy % / tool-call turns) on six multimodal search benchmarks. <b>Bold</b> = best, underline = second-best. Δ rows show absolute improvement of HyperEyes (HE) over the second-best open-source model under the Agentic Workflow setting.</i></p>
 
 > **Takeaway.** HyperEyes **Pareto-dominates** existing multimodal search agents on the joint accuracy–efficiency frontier: HE-30B (RL) surpasses the strongest open-source agent by **+9.9% accuracy** and reduces tool-call turns by **9.4** on average; HE-235B (RL) further closes the gap to / outperforms top closed-source models such as Gemini-3.1-Pro on multiple benchmarks while remaining substantially more efficient than existing deep search agents.
 
