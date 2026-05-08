@@ -75,7 +75,7 @@ Existing multimodal search benchmarks evaluate reasoning accuracy while neglecti
 Since traditional accuracy metrics alone cannot capture parallel operational efficiency, we propose a unified metric that jointly quantifies reasoning correctness and search efficiency:
 
 $$
-\mathrm{CAS} \;=\; \frac{\mathrm{Acc}^{2} \times 100}{N_{\text{tok}} + 2\,N_{\text{tool}} + 1}
+\mathrm{CAS} = \frac{\mathrm{Acc}^{2} \times 100}{N_{\text{tok}} + 2 N_{\text{tool}} + 1}
 $$
 
 - **Numerator — Acc² × 100.** The squared accuracy term ensures that *correctness remains the primary optimization objective*; small accuracy gaps are amplified to prevent trivially "fast but wrong" agents from scoring high.
