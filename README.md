@@ -66,12 +66,21 @@ This dual-grained signal jointly addresses (a) trajectory-level over-searching a
 
 ## 📊 IMEB Benchmark
 
-Standard evaluations primarily assess final-answer accuracy, masking the inefficiencies of verbose search trajectories. We introduce **IMEB (Image Multi-Entity Benchmark)** — a human-curated benchmark of **300 multi-entity visual instances** that jointly evaluates:
+Existing multimodal search benchmarks evaluate reasoning accuracy while neglecting tool-call efficiency, allowing models to resolve parallelizable queries via verbose sequential trajectories that inflate latency and introduce noisy retrievals. To close this gap, we introduce the **Image Multi-Entity Benchmark (IMEB)**, which elevates **search efficiency to a primary evaluation axis** and constructs queries that *strictly* require concurrent localization and retrieval across multiple entities.
 
-- **Answer accuracy**
-- **Search efficiency** (tool-call rounds, parallel breadth)
+**Dataset.** Curated by **PhD-level annotators** through multiple rounds of **double-blind cross-validation**, IMEB comprises **300 rigorously verified instances** across **6 diverse domains** (Sports, Humanities & History, Entertainment, Daily Life, Consumption, Science, Finance), with an average of **4.6 entities per image**. Every question undergoes rigorous human peer-review and automated filtering to guarantee that it is unambiguously solvable yet strictly necessitates concurrent external tool invocation.
 
-Each instance features a multi-entity image paired with a question that **strictly requires concurrent localization and retrieval** across multiple entities, exposing parallel search breadth as the primary bottleneck in multi-entity visual search.
+### Cost-Aware Score (CAS)
+
+Since traditional accuracy metrics alone cannot capture parallel operational efficiency, we propose a unified metric that jointly quantifies reasoning correctness and search efficiency:
+
+$$
+\mathrm{CAS} \;=\; \frac{\mathrm{Acc}^{2} \times 100}{N_{\text{tok}} + 2\,N_{\text{tool}} + 1}
+$$
+
+- **Numerator — Acc² × 100.** The squared accuracy term ensures that *correctness remains the primary optimization objective*; small accuracy gaps are amplified to prevent trivially "fast but wrong" agents from scoring high.
+- **Denominator — token & tool cost.** Penalizes token consumption ($N_{\text{tok}}$, in thousands) and sequential tool-call rounds ($N_{\text{tool}}$). The weights `(1, 2)` approximate a one-second latency overhead for both generation and tool execution.
+- **Net effect.** CAS facilitates **fair comparison across distinct agent architectures** by jointly rewarding accuracy and operational efficiency on a single axis.
 
 ---
 
