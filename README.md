@@ -4,12 +4,6 @@
 
 > *Search wider, not longer.*
 
-**Authors:** Guankai Li¹†‡, Jiabin Chen¹†, Yi Xu², Xichen Zhang¹, Yuan Lu¹\*
-
-¹ Xiaohongshu Inc.   ² University of Cambridge
-
-<sub>† Equal Contributor &nbsp;&nbsp; ‡ Project Lead &nbsp;&nbsp; \* Corresponding author: Yuan Lu (`luyuan2@xiaohongshu.com`)</sub>
-
 HyperEyes is a **parallel multimodal search agent** that fuses visual grounding and retrieval into a single atomic action, enabling concurrent search across multiple entities while treating inference efficiency as a first-class training objective.
 
 <p align="center">
@@ -69,6 +63,12 @@ This dual-grained signal jointly addresses (a) trajectory-level over-searching a
 Existing multimodal search benchmarks evaluate reasoning accuracy while neglecting tool-call efficiency, allowing models to resolve parallelizable queries via verbose sequential trajectories that inflate latency and introduce noisy retrievals. To close this gap, we introduce the **Image Multi-Entity Benchmark (IMEB)**, which elevates **search efficiency to a primary evaluation axis** and constructs queries that *strictly* require concurrent localization and retrieval across multiple entities.
 
 **Dataset.** Curated by **PhD-level annotators** through multiple rounds of **double-blind cross-validation**, IMEB comprises **300 rigorously verified instances** across **6 diverse domains** (Sports, Humanities & History, Entertainment, Daily Life, Consumption, Science, Finance), with an average of **4.6 entities per image**. Every question undergoes rigorous human peer-review and automated filtering to guarantee that it is unambiguously solvable yet strictly necessitates concurrent external tool invocation.
+
+<p align="center">
+  <img src="figures/IMEB.png" alt="IMEB Benchmark Overview" width="95%"/>
+</p>
+
+<p align="center"><i>Overview of the IMEB benchmark: domain distribution (N = 300), entity-count statistics for each domain, and an example question-answer pair.</i></p>
 
 ### Cost-Aware Score (CAS)
 
