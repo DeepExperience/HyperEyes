@@ -119,8 +119,8 @@ $$
 ## ⭐ Star History
 
 <p align="center">
-  <a href="https://star-history.com/#Guankai-Li/HyperEyes&Date">
-    <img src="https://api.star-history.com/svg?repos=Guankai-Li/HyperEyes&type=Date" alt="Star History Chart" width="80%"/>
+  <a href="https://star-history.com/#DeepExperience/HyperEyes&Date">
+    <img src="https://api.star-history.com/svg?repos=DeepExperience/HyperEyes&type=Date" alt="Star History Chart" width="80%"/>
   </a>
 </p>
 
@@ -137,7 +137,7 @@ If you find HyperEyes useful for your research, please consider citing:
   journal = {arXiv preprint},
   year    = {2026},
   note    = {Preprint},
-  url     = {https://github.com/Guankai-Li/HyperEyes}
+  url     = {https://github.com/DeepExperience/HyperEyes}
 }
 ```
 
