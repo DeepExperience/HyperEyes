@@ -44,6 +44,12 @@ HyperEyes addresses this with the principle of **"search wider, not longer"**: d
 
 ## 🧠 Method Overview
 
+<p align="center">
+  <img src="figures/framework.png" alt="HyperEyes Framework" width="95%"/>
+</p>
+
+<p align="center"><i>Overview of the HyperEyes framework: a Unified Grounded Search (UGS) action space combined with a two-stage training recipe — Parallel-Amenable Data Synthesis for cold-start SFT, followed by Dual-Grained Efficiency-Aware RL with TRACE (trajectory-level) and OPD (token-level) supervision.</i></p>
+
 HyperEyes is trained in two stages on top of the **UGS** action space:
 
 1. **Cold-start (SFT) via Parallel-Amenable Data Synthesis.**
