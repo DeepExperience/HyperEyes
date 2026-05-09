@@ -141,7 +141,7 @@ If you find HyperEyes useful for your research, please consider citing:
 }
 ```
 
----
+<!-- ---
 
 ## 📬 Contact
 
@@ -150,8 +150,8 @@ For questions, suggestions, or collaboration, please open an issue in this repos
 - **Yuan Lu** (corresponding author) — [`luyuan2@xiaohongshu.com`](mailto:luyuan2@xiaohongshu.com)
 - **Guankai Li** — [`liguankai@xiaohongshu.com`](mailto:liguankai@xiaohongshu.com)
 
----
+--- -->
 
-## 📄 License
+<!-- ## 📄 License
 
-Code and benchmark will be released under a permissive open-source license (TBD). Figures are released for academic use.
+Code and benchmark will be released under a permissive open-source license (TBD). Figures are released for academic use. -->
