@@ -110,6 +110,16 @@ $$
 
 ---
 
+## ⭐ Star History
+
+<p align="center">
+  <a href="https://star-history.com/#Guankai-Li/HyperEyes&Date">
+    <img src="https://api.star-history.com/svg?repos=Guankai-Li/HyperEyes&type=Date" alt="Star History Chart" width="80%"/>
+  </a>
+</p>
+
+---
+
 ## 📜 Citation
 
 If you find HyperEyes useful for your research, please consider citing:
