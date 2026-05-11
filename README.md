@@ -2,6 +2,12 @@
 
 **HyperEyes: Dual-Grained Efficiency-Aware Reinforcement Learning for Parallel Multimodal Search Agents**
 
+<p align="center">
+  <a href="https://arxiv.org/abs/2605.07177"><img src="https://img.shields.io/badge/arXiv-2605.07177-b31b1b.svg" alt="arXiv"/></a>
+  <a href="https://doi.org/10.48550/arXiv.2605.07177"><img src="https://img.shields.io/badge/DOI-10.48550%2FarXiv.2605.07177-blue.svg" alt="DOI"/></a>
+  <a href="https://github.com/DeepExperience/HyperEyes"><img src="https://img.shields.io/badge/Code-GitHub-181717.svg?logo=github" alt="Code"/></a>
+</p>
+
 > *Search wider, not longer.*
 
 HyperEyes is a **parallel multimodal search agent** that fuses visual grounding and retrieval into a single atomic action, enabling concurrent search across multiple entities while treating inference efficiency as a first-class training objective.
@@ -134,10 +140,10 @@ If you find HyperEyes useful for your research, please consider citing:
 @article{li2026hypereyes,
   title   = {HyperEyes: Dual-Grained Efficiency-Aware Reinforcement Learning for Parallel Multimodal Search Agents},
   author  = {Li, Guankai and Chen, Jiabin and Xu, Yi and Zhang, Xichen and Lu, Yuan},
-  journal = {arXiv preprint},
+  journal = {arXiv preprint arXiv:2605.07177},
   year    = {2026},
-  note    = {Preprint},
-  url     = {https://github.com/DeepExperience/HyperEyes}
+  doi     = {10.48550/arXiv.2605.07177},
+  url     = {https://arxiv.org/abs/2605.07177}
 }
 ```
 
