@@ -137,13 +137,14 @@ $$
 If you find HyperEyes useful for your research, please consider citing:
 
 ```bibtex
-@article{li2026hypereyes,
-  title   = {HyperEyes: Dual-Grained Efficiency-Aware Reinforcement Learning for Parallel Multimodal Search Agents},
-  author  = {Li, Guankai and Chen, Jiabin and Xu, Yi and Zhang, Xichen and Lu, Yuan},
-  journal = {arXiv preprint arXiv:2605.07177},
-  year    = {2026},
-  doi     = {10.48550/arXiv.2605.07177},
-  url     = {https://arxiv.org/abs/2605.07177}
+@misc{li2026hypereyesdualgrainedefficiencyawarereinforcement,
+      title={HyperEyes: Dual-Grained Efficiency-Aware Reinforcement Learning for Parallel Multimodal Search Agents}, 
+      author={Guankai Li and Jiabin Chen and Yi Xu and Xichen Zhang and Yuan Lu},
+      year={2026},
+      eprint={2605.07177},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2605.07177}, 
 }
 ```
 
