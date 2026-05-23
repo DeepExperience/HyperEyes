@@ -1,0 +1,2 @@
+max_turns: 9
+rollout_interaction_env_path: examples.HyperEyes.env_agent

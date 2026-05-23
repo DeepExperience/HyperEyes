@@ -1,0 +1,1177 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Rollout Service",
+    "description": "Rollout service for data generation via SGLang engines.\n\nGenerates training samples by running the policy model against prompts, computing rewards, and publishing data to the TransferQueue for the Actor to consume.\n\nThese HTTP endpoints are used for lifecycle management, evaluation triggering, and async weight-update coordination.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/get_step": {
+      "get": {
+        "summary": "Http Get Step",
+        "operationId": "http_get_step_get_step_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Http Get Step Get Step Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/set_step": {
+      "post": {
+        "summary": "Http Set Step",
+        "operationId": "http_set_step_set_step_post",
+        "parameters": [
+          {
+            "name": "step",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Step"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Http Set Step Set Step Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stop_service": {
+      "post": {
+        "summary": "Http Stop",
+        "operationId": "http_stop_stop_service_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Http Stop Stop Service Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluate": {
+      "get": {
+        "summary": "Evaluate",
+        "operationId": "evaluate_evaluate_get",
+        "parameters": [
+          {
+            "name": "train_step",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Train Step"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/can_do_update_weight_for_async": {
+      "get": {
+        "summary": "Can Do Update Weight For Async",
+        "operationId": "can_do_update_weight_for_async_can_do_update_weight_for_async_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/is_eval_done": {
+      "get": {
+        "summary": "Is Eval Done",
+        "description": "Check whether the previous evaluation has finished (success or\nfailure).",
+        "operationId": "is_eval_done_is_eval_done_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/end_update_weight": {
+      "get": {
+        "summary": "End Update Weight",
+        "operationId": "end_update_weight_end_update_weight_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recover_rollout_engines": {
+      "get": {
+        "summary": "Recover Rollout Engines",
+        "operationId": "recover_rollout_engines_recover_rollout_engines_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scale_out": {
+      "post": {
+        "summary": "Scale Out",
+        "operationId": "scale_out_scale_out_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScaleOutAPIRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScaleOutResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Scale Out Requests",
+        "description": "List all scale-out requests with optional filtering.\n\nExamples:\n    # List all requests\n    curl -X GET http://localhost:8000/rollout/scale_out\n\n    # List PENDING requests\n    curl -X GET \"http://localhost:8000/rollout/scale_out?status=PENDING\"\n\n    # List 'actor' model's ACTIVE requests\n    curl -X GET \"http://localhost:8000/rollout/scale_out?model_name=actor&status=ACTIVE\"",
+        "operationId": "list_scale_out_requests_scale_out_get",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Model Name"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListScaleOutRequestsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scale_out_cancel": {
+      "post": {
+        "summary": "Cancel All Scale Out Requests",
+        "description": "Cancel all scale-out requests matching criteria.\n\nStatus Codes:\n    200: Success (some/all requests cancelled or previewed)\n    400: Invalid filter values (e.g., bad status name)\n    500: Internal server error\n\nExamples:\n    # 1. Preview what would be cancelled (dry-run)\n    curl -X POST http://localhost:8000/rollout/scale_out_cancel \\\n      -H \"Content-Type: application/json\" \\\n      -d '{\"dry_run\": true}'\n\n    # 2. Cancel all PENDING requests\n    curl -X POST http://localhost:8000/rollout/scale_out_cancel \\\n      -H \"Content-Type: application/json\" \\\n      -d '{\"status_filter\": \"PENDING\"}'\n\n    # 3. Cancel all PENDING requests for 'actor' model\n    curl -X POST http://localhost:8000/rollout/scale_out_cancel \\\n      -H \"Content-Type: application/json\" \\\n      -d '{\"model_name\": \"actor\", \"status_filter\": \"PENDING\"}'\n\n    # 4. Cancel all requests for 'actor' model\n    curl -X POST http://localhost:8000/rollout/scale_out_cancel \\\n      -H \"Content-Type: application/json\" \\\n      -d '{\"model_name\": \"actor\"}'",
+        "operationId": "cancel_all_scale_out_requests_scale_out_cancel_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelAllScaleOutRequestsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelAllScaleOutRequestsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scale_out/{request_id}": {
+      "get": {
+        "summary": "Get Scale Out Status",
+        "operationId": "get_scale_out_status_scale_out__request_id__get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScaleOutStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scale_out/{request_id}/cancel": {
+      "post": {
+        "summary": "Cancel Scale Out",
+        "operationId": "cancel_scale_out_scale_out__request_id__cancel_post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/engines": {
+      "get": {
+        "summary": "Get Engines",
+        "operationId": "get_engines_engines_get",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Model Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scale_in": {
+      "post": {
+        "summary": "Scale In",
+        "operationId": "scale_in_scale_in_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScaleInAPIRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScaleInResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Scale In Requests",
+        "description": "List all scale-in requests with optional filtering.",
+        "operationId": "list_scale_in_requests_scale_in_get",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Model Name"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListScaleInRequestsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scale_in/{request_id}": {
+      "get": {
+        "summary": "Get Scale In Status",
+        "operationId": "get_scale_in_status_scale_in__request_id__get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScaleInStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CancelAllScaleOutRequestsRequest": {
+        "properties": {
+          "model_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Name",
+            "description": "Filter: only cancel requests for this model"
+          },
+          "status_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Filter",
+            "description": "Filter: only cancel requests with this status"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run",
+            "description": "If true, preview what would be cancelled without actually cancelling",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "CancelAllScaleOutRequestsRequest",
+        "description": "Request model for cancel all scale-out requests."
+      },
+      "CancelAllScaleOutRequestsResponse": {
+        "properties": {
+          "succeeded": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Succeeded",
+            "description": "List of cancelled request IDs"
+          },
+          "skipped": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Skipped",
+            "description": "List of requests that couldn't be cancelled, with reasons"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count",
+            "description": "Total requests matching filters"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run",
+            "description": "Whether this was a dry-run"
+          },
+          "filters": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Filters",
+            "description": "Filters that were applied"
+          }
+        },
+        "type": "object",
+        "required": [
+          "succeeded",
+          "skipped",
+          "total_count",
+          "dry_run",
+          "filters"
+        ],
+        "title": "CancelAllScaleOutRequestsResponse",
+        "description": "Response model for cancel all scale-out requests."
+      },
+      "CancelResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "status",
+          "message"
+        ],
+        "title": "CancelResponse",
+        "description": "Response model for cancel operation."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ListScaleInRequestsResponse": {
+        "properties": {
+          "requests": {
+            "items": {
+              "$ref": "#/components/schemas/ScaleInStatusResponse"
+            },
+            "type": "array",
+            "title": "Requests"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count",
+            "description": "Total number of requests returned"
+          },
+          "model_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Name",
+            "description": "Filter used: model_name"
+          },
+          "status_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Filter",
+            "description": "Filter used: status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "requests",
+          "total_count"
+        ],
+        "title": "ListScaleInRequestsResponse",
+        "description": "Response model for list scale-in requests endpoint."
+      },
+      "ListScaleOutRequestsResponse": {
+        "properties": {
+          "requests": {
+            "items": {
+              "$ref": "#/components/schemas/ScaleOutStatusResponse"
+            },
+            "type": "array",
+            "title": "Requests"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count",
+            "description": "Total number of requests returned"
+          },
+          "model_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Name",
+            "description": "Filter used: model_name"
+          },
+          "status_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Filter",
+            "description": "Filter used: status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "requests",
+          "total_count"
+        ],
+        "title": "ListScaleOutRequestsResponse",
+        "description": "Response model for list scale-out requests endpoint."
+      },
+      "ScaleInAPIRequest": {
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "title": "Model Name",
+            "description": "Target model name",
+            "default": "default"
+          },
+          "num_replicas": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Num Replicas",
+            "description": "Target number of remaining replicas after scale-in. If > 0, takes priority over engine_urls.",
+            "default": 0
+          },
+          "engine_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Engine Urls",
+            "description": "Engine URLs to remove (e.g., ['http://localhost:30000', 'http://localhost:30001'])"
+          },
+          "force": {
+            "type": "boolean",
+            "title": "Force",
+            "description": "Force removal without waiting for drain",
+            "default": false
+          },
+          "timeout_secs": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timeout Secs",
+            "description": "Total timeout for the operation"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run",
+            "description": "Preview which engines would be removed without removing them",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "ScaleInAPIRequest",
+        "description": "API request model for scale-in operation."
+      },
+      "ScaleInResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Scale-in request accepted"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "status"
+        ],
+        "title": "ScaleInResponse",
+        "description": "Response model for scale-in operation."
+      },
+      "ScaleInStatusResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "num_replicas": {
+            "type": "integer",
+            "title": "Num Replicas"
+          },
+          "engine_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Engine Urls",
+            "description": "Engine URLs to remove"
+          },
+          "timeout_secs": {
+            "type": "number",
+            "title": "Timeout Secs"
+          },
+          "force": {
+            "type": "boolean",
+            "title": "Force"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "title": "Dry Run"
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "number",
+            "title": "Updated At"
+          },
+          "selected_engines": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Selected Engines"
+          },
+          "removed_engines": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Removed Engines"
+          },
+          "failed_engines": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Failed Engines"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "status",
+          "model_name",
+          "num_replicas",
+          "timeout_secs",
+          "force",
+          "dry_run",
+          "created_at",
+          "updated_at",
+          "selected_engines",
+          "removed_engines",
+          "failed_engines",
+          "error_message"
+        ],
+        "title": "ScaleInStatusResponse",
+        "description": "Response model for scale-in status query."
+      },
+      "ScaleOutAPIRequest": {
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "title": "Model Name",
+            "description": "Target model name",
+            "default": "default"
+          },
+          "num_replicas": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Num Replicas",
+            "description": "Target absolute total engine count for ray_native mode (num_replicas > 0). If current engines >= target, no-op.",
+            "default": 0
+          },
+          "engine_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Engine Urls",
+            "description": "External engine URLs to add (external mode, when num_replicas == 0). URLs already active or in-flight are automatically filtered out (idempotent)."
+          },
+          "timeout_secs": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timeout Secs",
+            "description": "Total timeout for the operation"
+          }
+        },
+        "type": "object",
+        "title": "ScaleOutAPIRequest",
+        "description": "API request model for scale-out operation.\n\nIdempotency guarantees:\n- If num_replicas > 0: ray_native mode. num_replicas is the target *absolute* total engine count.\n  If the current engine count (including in-flight requests) already meets or\n  exceeds the target, no scale-out occurs (returns immediately with noop status).\n- If engine_urls is provided: external mode. engine_urls are filtered to exclude engines already active\n  in the system or currently being processed by in-flight scale-out requests (status in\n  PENDING, CREATING, CONNECTING, HEALTH_CHECKING, WEIGHT_SYNCING, READY, ACTIVE).\n- num_gpus_per_engine is always taken from args.rollout_num_gpus_per_engine."
+      },
+      "ScaleOutResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Scale-out request accepted"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "status"
+        ],
+        "title": "ScaleOutResponse",
+        "description": "Response model for scale-out operation."
+      },
+      "ScaleOutStatusResponse": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "num_replicas": {
+            "type": "integer",
+            "title": "Num Replicas"
+          },
+          "engine_urls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Engine Urls"
+          },
+          "engine_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Engine Ids"
+          },
+          "failed_engines": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Failed Engines"
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "number",
+            "title": "Updated At"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "weight_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id",
+          "status",
+          "model_name",
+          "num_replicas",
+          "engine_urls",
+          "engine_ids",
+          "failed_engines",
+          "created_at",
+          "updated_at",
+          "error_message",
+          "weight_version"
+        ],
+        "title": "ScaleOutStatusResponse",
+        "description": "Response model for scale-out status query."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

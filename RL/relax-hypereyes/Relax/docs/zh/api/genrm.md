@@ -1,0 +1,42 @@
+---
+outline: deep
+---
+
+# GenRM 服务 API
+
+GenRM（生成式奖励模型）服务提供基于 LLM 的响应评估。它以 Ray Serve 部署方式运行，通过 FastAPI ingress 暴露 HTTP 端点。
+
+## 概览
+
+| 属性 | 值 |
+|------|---|
+| **模块** | `relax.components.genrm` |
+| **部署方式** | `@serve.deployment(logging_config=...)` |
+| **入口** | FastAPI |
+
+### 架构
+
+与 Actor 和 Rollout 不同，GenRM 是一个**被动 HTTP 服务** — 它不运行后台循环，仅响应传入的 `/generate` 请求。
+
+服务使用 SGLang 引擎执行偏好评估：
+
+1. 通过 `/generate` 接收 OpenAI 格式的聊天消息
+2. 应用聊天模板并进行分词
+3. 发送到 SGLang 引擎，使用可配置的采样参数
+4. 返回原始模型响应文本
+
+### 共置模式
+
+当与 Actor 共置（共享 GPU 资源）时，GenRM 支持卸载/加载操作：
+
+- **Offload（卸载）**：在 Actor 训练前释放 GPU 显存
+- **Onload（加载）**：在 rollout 前将模型权重重新加载到 GPU
+
+## HTTP 端点
+
+<SwaggerUI specUrl="/Relax/openapi/genrm.json" />
+
+## 源码
+
+- 实现：[`relax/components/genrm.py`](https://github.com/redai-infra/Relax/blob/main/relax/components/genrm.py)
+- 基类：[`relax/components/base.py`](https://github.com/redai-infra/Relax/blob/main/relax/components/base.py)

@@ -1,0 +1,205 @@
+# Copyright (c) 2026 Relax Authors. All Rights Reserved.
+
+from megatron.training.arguments import parse_args as _megatron_parse_args
+from megatron.training.arguments import validate_args as _megatron_validate_args
+from megatron.training.tokenizer.tokenizer import _vocab_size_with_padding
+from transformers import AutoConfig
+
+from relax.utils.logging_utils import get_logger
+
+
+__all__ = ["validate_args", "megatron_parse_args", "set_default_megatron_args"]
+
+logger = get_logger(__name__)
+
+
+def validate_args(args):
+    """Run megatron's own validate_args plus slime-specific megatron
+    validations."""
+
+    import torch
+
+    if not torch.cuda.is_available():
+        from unittest.mock import patch
+
+        class _CudaProperty:
+            major = 9
+            minor = 0
+
+        with (
+            patch("torch.cuda.get_device_properties", return_value=_CudaProperty()),
+            patch("torch.cuda.get_device_capability", return_value=(9, 0)),
+        ):
+            _megatron_validate_args(args)
+    else:
+        _megatron_validate_args(args)
+
+    # always use varlen
+    args.variable_seq_lengths = True
+    if getattr(args, "moe_token_dispatcher_type", None) == "allgather":
+        logger.info(
+            "--moe-token-dispatcher-type allgather does not support variable sequence length, "
+            "please use alltoall dispatcher instead."
+        )
+        args.moe_token_dispatcher_type = "alltoall"
+
+    if args.pipeline_model_parallel_size == 1:
+        assert args.decoder_first_pipeline_num_layers is None and args.decoder_last_pipeline_num_layers is None, (
+            "decoder_first_pipeline_num_layers and decoder_last_pipeline_num_layers should be None when "
+            "pipeline_model_parallel_size is 1."
+        )
+    return args
+
+
+def _hf_validate_args(args, hf_config):
+    def equal(x, y):
+        return x == y
+
+    errors = []
+
+    # Multimodal models (Qwen3-VL, Qwen3.5, Qwen3-Omni, etc.) use multi-axis RoPE whose
+    # rotary_pos_emb is a Python list of tensors, not a single Tensor. Megatron's fused
+    # RoPE kernel cannot handle this and produces numerically different results from the
+    # unfused HF/SGLang implementation, causing training-inference log-prob mismatch.
+    is_multimodal = hasattr(hf_config, "text_config") or hasattr(hf_config, "thinker_config")
+    if is_multimodal and getattr(args, "apply_rope_fusion", False):
+        errors.append(
+            "Multimodal models use multi-axis RoPE (list of tensors) which is incompatible "
+            "with fused RoPE kernels — this causes training-inference log-prob mismatch. "
+            "Add --no-rope-fusion to the launch script."
+        )
+
+    # omni models have different config structure
+    if hasattr(hf_config, "thinker_config"):
+        hf_config = hf_config.thinker_config
+
+    # multimodal models have different config structure
+    if hasattr(hf_config, "text_config"):
+        hf_config = hf_config.text_config
+
+    for hf_config_name, megatron_config_name, compare_fn in [
+        ("hidden_size", "hidden_size", equal),
+        ("num_attention_heads", "num_attention_heads", equal),
+        ("num_hidden_layers", "num_layers", equal),
+        ("intermediate_size", "ffn_hidden_size", equal),
+        ("tie_word_embeddings", "untie_embeddings_and_output_weights", lambda x, y: not x == y),
+        ("rms_norm_eps", "norm_epsilon", equal),
+        ("rope_theta", "rotary_base", equal),
+    ]:
+        if hasattr(hf_config, hf_config_name):
+            if not compare_fn(getattr(hf_config, hf_config_name), getattr(args, megatron_config_name)):
+                errors.append(
+                    f"{hf_config_name} in hf config {getattr(hf_config, hf_config_name)} is not equal to "
+                    f"{megatron_config_name} {getattr(args, megatron_config_name)}, please check the config."
+                )
+
+    if len(errors) > 0:
+        raise AssertionError("hf_validate_args failed: " + "; ".join(errors))
+
+
+def _set_default_megatron_args(args):
+    # always use zero optimizer
+    args.use_distributed_optimizer = True
+    # TODO: maybe change this after megatron has good fp8 support
+    args.bf16 = not args.fp16
+    # placeholders
+    if args.seq_length is None:
+        args.seq_length = 4096
+    args.max_position_embeddings = args.seq_length
+    # TODO: revisit this when megatron(dev) have solved the optimizer-cpu-offload ckpt saving bug
+    args.dist_ckpt_save_pre_mcore_014 = True
+    # compatible for megatron
+    if hasattr(args, "rope_type") and args.rope_type is None:
+        args.rope_type = "yarn" if args.multi_latent_attention else "rope"
+
+    if args.vocab_size and not args.padded_vocab_size:
+        args.padded_vocab_size = _vocab_size_with_padding(args.vocab_size, args)
+
+    if not args.tokenizer_model and not args.tokenizer_type:
+        logger.info("--tokenizer-model not set, use --hf-checkpoint as tokenizer model.")
+        args.tokenizer_model = args.hf_checkpoint
+        args.tokenizer_type = "HuggingFaceTokenizer"
+    return args
+
+
+# Public alias for external tools (e.g. convert_hf_to_torch_dist.py)
+set_default_megatron_args = _set_default_megatron_args
+
+
+def _derive_cluster_args_from_resource(args):
+    """When ``--resource`` is provided, derive the legacy per-role GPU args
+    (``actor_num_gpus_per_node``, ``actor_num_nodes``, ``rollout_num_gpus``,
+    ``critic_num_*``, ``genrm_num_gpus``) so that users only need to specify
+    ``--resource`` without duplicating resource information in separate flags.
+
+    The function is intentionally conservative: it only overwrites a legacy arg
+    when the user did **not** explicitly set it (i.e. still at its default).
+    """
+    if args.resource is None:
+        return
+
+    num_gpus_per_node = getattr(args, "num_gpus_per_node", 8)
+
+    # --- actor ---
+    if "actor" in args.resource:
+        _, actor_total_gpus = args.resource["actor"]
+        # Only override when the user relied on the defaults (1 node × 8 gpus)
+        derived_gpus_per_node = min(num_gpus_per_node, actor_total_gpus)
+        derived_num_nodes = max(1, actor_total_gpus // derived_gpus_per_node)
+        if args.actor_num_gpus_per_node == 8 and args.actor_num_nodes == 1:
+            # User did not explicitly set these; derive from --resource
+            args.actor_num_gpus_per_node = derived_gpus_per_node
+            args.actor_num_nodes = derived_num_nodes
+            logger.info(
+                f"Derived actor_num_gpus_per_node={args.actor_num_gpus_per_node}, "
+                f"actor_num_nodes={args.actor_num_nodes} from --resource"
+            )
+
+    # --- rollout ---
+    if "rollout" in args.resource:
+        _, rollout_total_gpus = args.resource["rollout"]
+        if args.rollout_num_gpus is None:
+            args.rollout_num_gpus = rollout_total_gpus
+            logger.info(f"Derived rollout_num_gpus={args.rollout_num_gpus} from --resource")
+
+    # --- critic ---
+    if "critic" in args.resource:
+        _, critic_total_gpus = args.resource["critic"]
+        derived_gpus_per_node = min(num_gpus_per_node, critic_total_gpus)
+        derived_num_nodes = max(1, critic_total_gpus // derived_gpus_per_node) if derived_gpus_per_node > 0 else 0
+        if args.critic_num_gpus_per_node is None and args.critic_num_nodes is None:
+            # User did not explicitly set these; derive from --resource
+            args.critic_num_gpus_per_node = derived_gpus_per_node
+            args.critic_num_nodes = derived_num_nodes
+            logger.info(
+                f"Derived critic_num_gpus_per_node={args.critic_num_gpus_per_node}, "
+                f"critic_num_nodes={args.critic_num_nodes} from --resource"
+            )
+
+    # --- genrm ---
+    if "genrm" in args.resource:
+        _, genrm_total_gpus = args.resource["genrm"]
+        if getattr(args, "genrm_num_gpus", 1) == 1 and genrm_total_gpus != 1:
+            args.genrm_num_gpus = genrm_total_gpus
+            logger.info(f"Derived genrm_num_gpus={args.genrm_num_gpus} from --resource")
+
+
+def megatron_parse_args(extra_args_provider, skip_hf_validate=False):
+    """Parse megatron args, validate HF config, and set defaults."""
+    args = _megatron_parse_args(extra_args_provider=extra_args_provider, ignore_unknown_args=True)
+
+    if args.hf_checkpoint and not skip_hf_validate:
+        hf_config = AutoConfig.from_pretrained(args.hf_checkpoint, trust_remote_code=True)
+        _hf_validate_args(args, hf_config)
+
+    # Derive legacy cluster args from --resource when available, so users
+    # don't have to specify both --resource and --actor-num-nodes / etc.
+    _derive_cluster_args_from_resource(args)
+
+    args.rank = 0
+    if args.critic_train_only:
+        args.world_size = args.critic_num_nodes * args.critic_num_gpus_per_node
+    else:
+        args.world_size = args.actor_num_nodes * args.actor_num_gpus_per_node
+    args = _set_default_megatron_args(args)
+    return args

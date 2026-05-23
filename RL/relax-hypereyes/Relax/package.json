@@ -1,0 +1,30 @@
+{
+  "name": "relax-docs",
+  "version": "1.0.0",
+  "description": "Relax Documentation",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:gen-openapi": "python scripts/tools/generate_openapi.py",
+    "docs:build": "python scripts/tools/generate_openapi.py && vitepress build docs && node docs/fix-chunk-names.js",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.37",
+    "medium-zoom": "^1.1.0",
+    "mermaid": "^10.0.0",
+    "swagger-ui-dist": "^5.32.1",
+    "vitepress": "^1.0.0",
+    "vitepress-plugin-mermaid": "^2.0.0",
+    "vue": "^3.4.0"
+  },
+  "keywords": [
+    "reinforcement-learning",
+    "documentation",
+    "vitepress"
+  ],
+  "author": "Relax Team",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "markdown-it-mathjax3": "^4.3.2"
+  }
+}

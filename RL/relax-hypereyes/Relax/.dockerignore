@@ -1,0 +1,82 @@
+# Version control
+# .git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+*.egg
+dist
+build
+.eggs
+
+# Virtual environments
+.venv
+venv
+env
+ENV
+deactivate
+
+# IDE and editor
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.nox
+
+# Linting and formatting
+.ruff_cache
+.mypy_cache
+.pylint_cache
+.flake8
+.ruff.toml
+
+# Documentation
+LICENSE
+AGENTS.md
+
+# Development files (note: docker/patch/* is needed by Dockerfile)
+.sisyphus
+.opencode
+.skills
+TAGS
+Makefile
+.pre-commit-config.yaml
+.pre-commit-hooks
+
+# Logs
+*.log
+logs
+
+# Node (if not needed in container)
+node_modules
+# package.json
+# package-lock.json
+
+# Docker (keep patch files needed by Dockerfile)
+docker/Dockerfile
+docker/README.md
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Note: The following files are NOT excluded and will be included:
+# - pyproject.toml, setup.py (needed for pip install -e .)
+# - requirements.txt (dependency installation)
+# - relax/, slime/, slime_plugins/, transfer_queue/ (core packages)
+# - examples/, scripts/, configs/ (runtime files)
+
+.sisyphus

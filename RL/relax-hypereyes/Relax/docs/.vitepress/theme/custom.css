@@ -1,0 +1,544 @@
+/**
+ * Customize default theme styling by overriding CSS variables:
+ * https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css
+ */
+
+/**
+ * Colors
+ *
+ * Each colors have exact same color scale system with 3 levels of solid
+ * colors with different brightness, and 1 soft color.
+ * 
+ * - `XXX-1`: The most solid color used mainly for colored text. It must
+ *   satisfy the contrast ratio against when used on top of `XXX-soft`.
+ *
+ * - `XXX-2`: The color used mainly for hover state of the button.
+ *
+ * - `XXX-3`: The color for solid background, such as bg color of the button.
+ *   It must satisfy the contrast ratio with pure white (#ffffff) text on
+ *   top of it.
+ *
+ * - `XXX-soft`: The color used for subtle background such as custom container
+ *   or badges. It must satisfy the contrast ratio when putting `XXX-1` colors
+ *   on top of it.
+ *
+ *   The soft color must be semi transparent alpha channel. This is crucial
+ *   because it allows adding multiple "soft" colors on top of each other
+ *   to create a accent, such as when having inline code block inside
+ *   custom containers.
+ *
+ * - `default`: The color used purely for subtle indication without any
+ *   special meanings attched to it such as bg color for menu hover state.
+ *
+ * - `brand`: Used for primary brand colors, such as link text, button with
+ *   brand theme, etc.
+ *
+ * - `tip`: Used to indicate useful information. The default theme uses the
+ *   brand color for this by default.
+ *
+ * - `warning`: Used to indicate warning to the users. Used in custom
+ *   container, badges, etc.
+ *
+ * - `danger`: Used to show error, or dangerous message to the users. Used
+ *   in custom container, badges, etc.
+ * -------------------------------------------------------------------------- */
+
+ :root {
+  --vp-c-default-1: var(--vp-c-gray-1);
+  --vp-c-default-2: var(--vp-c-gray-2);
+  --vp-c-default-3: var(--vp-c-gray-3);
+  --vp-c-default-soft: var(--vp-c-gray-soft);
+
+  --vp-c-brand-1: #e8384a;
+  --vp-c-brand-2: #d4323e;
+  --vp-c-brand-3: #ef6471;
+  --vp-c-brand-soft: rgba(232, 56, 74, 0.14);
+
+  --vp-c-tip-1: var(--vp-c-brand-1);
+  --vp-c-tip-2: var(--vp-c-brand-2);
+  --vp-c-tip-3: var(--vp-c-brand-3);
+  --vp-c-tip-soft: var(--vp-c-brand-soft);
+
+  --vp-c-warning-1: #e7c000;
+  --vp-c-warning-2: #eac54f;
+  --vp-c-warning-3: #edc975;
+  --vp-c-warning-soft: rgba(231, 192, 0, 0.14);
+
+  --vp-c-danger-1: #e0245e;
+  --vp-c-danger-2: #e54d7a;
+  --vp-c-danger-3: #ea7596;
+  --vp-c-danger-soft: rgba(224, 36, 94, 0.14);
+
+  /* Tertiary accent — lavender */
+  --vp-c-tertiary: #bda2ff;
+
+  /* Typography — Space Grotesk for headlines, Manrope for body, Inter for labels */
+  --vp-font-family-base: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code", Consolas, monospace;
+  --vp-font-family-headline: "Space Grotesk", sans-serif;
+  --vp-font-family-label: "Inter", sans-serif;
+}
+
+/**
+ * Component: Button
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: var(--vp-c-white);
+  --vp-button-brand-bg: var(--vp-c-brand-3);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: var(--vp-c-white);
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: var(--vp-c-white);
+  --vp-button-brand-active-bg: var(--vp-c-brand-1);
+}
+
+/**
+ * Component: Home
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(
+    120deg,
+    #e8384a 30%,
+    #ef6471
+  );
+}
+
+/**
+ * Component: Custom Block
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --vp-custom-block-tip-border: transparent;
+  --vp-custom-block-tip-text: var(--vp-c-text-1);
+  --vp-custom-block-tip-bg: var(--vp-c-brand-soft);
+  --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
+}
+
+/**
+ * Component: Algolia
+ * -------------------------------------------------------------------------- */
+
+.DocSearch {
+  --docsearch-primary-color: var(--vp-c-brand-1) !important;
+}
+
+/**
+ * Component: Medium Zoom
+ * -------------------------------------------------------------------------- */
+
+/* 图片缩放样式 */
+.main img {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+
+.main img:hover {
+  transform: scale(1.02);
+}
+
+/* Medium Zoom 覆盖层样式 */
+.medium-zoom-overlay {
+  z-index: 100;
+  background: var(--vp-c-bg) !important;
+}
+
+.medium-zoom-image {
+  z-index: 101;
+  cursor: zoom-out;
+}
+
+.medium-zoom-image--opened {
+  cursor: zoom-out;
+}
+
+/* 深色模式下的背景 */
+.dark .medium-zoom-overlay {
+  background: rgba(0, 0, 0, 0.9) !important;
+}
+
+/**
+ * ASCII Art Background — Dark Home Page
+ * -------------------------------------------------------------------------- */
+
+/* 
+ * Force dark appearance on home pages so the ASCII rain background 
+ * shows through properly. The VitePress home layout areas are made
+ * transparent / semi-transparent to reveal the animated canvas.
+ */
+
+/* Home page: make the main background transparent so canvas shows through */
+.VPHome {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dark background for the entire site to match the ASCII canvas */
+.dark .VPHome,
+.dark .VPContent.is-home {
+  background: transparent;
+}
+
+/* In light mode, also make home transparent since we have a dark ASCII bg */
+.VPContent.is-home {
+  background: transparent;
+}
+
+/* Hero section: semi-transparent dark background for readability */
+.VPHero {
+  position: relative;
+  z-index: 1;
+}
+
+.VPHome .VPHero .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Feature cards: glassmorphic frosted glass effect on home */
+.VPHome .VPFeatures {
+  position: relative;
+  z-index: 1;
+}
+
+.VPHome .VPFeature {
+  background: rgba(31, 31, 35, 0.6) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  transition: all 0.3s ease;
+}
+
+.VPHome .VPFeature:hover {
+  background: rgba(31, 31, 35, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 0 24px rgba(232, 56, 74, 0.06);
+  transform: translateY(-3px);
+}
+
+/* Feature card layout — icon and title on the same row */
+.VPHome .VPFeature .box {
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+}
+
+.VPHome .VPFeature .box .icon {
+  margin-bottom: 0 !important;
+  margin-right: 12px !important;
+}
+
+.VPHome .VPFeature .title {
+  color: #f0edf1 !important;
+  font-family: var(--vp-font-family-headline, "Space Grotesk", sans-serif) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px !important;
+}
+
+.VPHome .VPFeature .details {
+  flex-basis: 100% !important;
+  color: #acaaae !important;
+  padding-top: 4px !important;
+  font-family: var(--vp-font-family-base, "Manrope", sans-serif) !important;
+}
+
+/* Feature SVG icon — duotone colored icon containers */
+.VPHome .VPFeature .VPImage,
+.VPHome .VPFeature .icon {
+  width: 20px !important;
+  height: 20px !important;
+  padding: 10px !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: content-box !important;
+  font-size: 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+.VPHome .VPFeature .VPImage svg,
+.VPHome .VPFeature .icon svg {
+  width: 26px !important;
+  height: 26px !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  transition: all 0.3s ease !important;
+}
+
+/* --- Per-icon color schemes (duotone flat style) --- */
+
+/* 1. Agentic RL — Teal (#2dd4bf) */
+.VPHome .VPFeature .icon:has(.icon-teal) {
+  background: rgba(45, 212, 191, 0.12) !important;
+  border: 1px solid rgba(45, 212, 191, 0.2) !important;
+  color: #2dd4bf !important;
+}
+.VPHome .VPFeature .icon:has(.icon-teal) svg {
+  stroke: #2dd4bf !important;
+  color: #2dd4bf !important;
+}
+.VPHome .VPFeature:hover .icon:has(.icon-teal) {
+  background: rgba(45, 212, 191, 0.18) !important;
+  border-color: rgba(45, 212, 191, 0.35) !important;
+  box-shadow: 0 0 20px rgba(45, 212, 191, 0.1) !important;
+  transform: scale(1.05);
+}
+
+/* 2. High Performance — Amber (#fbbf24) */
+.VPHome .VPFeature .icon:has(.icon-amber) {
+  background: rgba(251, 191, 36, 0.12) !important;
+  border: 1px solid rgba(251, 191, 36, 0.2) !important;
+  color: #fbbf24 !important;
+}
+.VPHome .VPFeature .icon:has(.icon-amber) svg {
+  stroke: #fbbf24 !important;
+  color: #fbbf24 !important;
+}
+.VPHome .VPFeature:hover .icon:has(.icon-amber) {
+  background: rgba(251, 191, 36, 0.18) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.1) !important;
+  transform: scale(1.05);
+}
+
+/* 3. Multi-Modal — Rose (#fb7185) */
+.VPHome .VPFeature .icon:has(.icon-rose) {
+  background: rgba(251, 113, 133, 0.12) !important;
+  border: 1px solid rgba(251, 113, 133, 0.2) !important;
+  color: #fb7185 !important;
+}
+.VPHome .VPFeature .icon:has(.icon-rose) svg {
+  stroke: #fb7185 !important;
+  color: #fb7185 !important;
+}
+.VPHome .VPFeature:hover .icon:has(.icon-rose) {
+  background: rgba(251, 113, 133, 0.18) !important;
+  border-color: rgba(251, 113, 133, 0.35) !important;
+  box-shadow: 0 0 20px rgba(251, 113, 133, 0.1) !important;
+  transform: scale(1.05);
+}
+
+/* 4. Architecture — Indigo (#818cf8) */
+.VPHome .VPFeature .icon:has(.icon-indigo) {
+  background: rgba(129, 140, 248, 0.12) !important;
+  border: 1px solid rgba(129, 140, 248, 0.2) !important;
+  color: #818cf8 !important;
+}
+.VPHome .VPFeature .icon:has(.icon-indigo) svg {
+  stroke: #818cf8 !important;
+  color: #818cf8 !important;
+}
+.VPHome .VPFeature:hover .icon:has(.icon-indigo) {
+  background: rgba(129, 140, 248, 0.18) !important;
+  border-color: rgba(129, 140, 248, 0.35) !important;
+  box-shadow: 0 0 20px rgba(129, 140, 248, 0.1) !important;
+  transform: scale(1.05);
+}
+
+/* 5. Monitoring — Emerald (#34d399) */
+.VPHome .VPFeature .icon:has(.icon-emerald) {
+  background: rgba(52, 211, 153, 0.12) !important;
+  border: 1px solid rgba(52, 211, 153, 0.2) !important;
+  color: #34d399 !important;
+}
+.VPHome .VPFeature .icon:has(.icon-emerald) svg {
+  stroke: #34d399 !important;
+  color: #34d399 !important;
+}
+.VPHome .VPFeature:hover .icon:has(.icon-emerald) {
+  background: rgba(52, 211, 153, 0.18) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.1) !important;
+  transform: scale(1.05);
+}
+
+/* 6. Easy to Use — Orange (#fb923c) */
+.VPHome .VPFeature .icon:has(.icon-orange) {
+  background: rgba(251, 146, 60, 0.12) !important;
+  border: 1px solid rgba(251, 146, 60, 0.2) !important;
+  color: #fb923c !important;
+}
+.VPHome .VPFeature .icon:has(.icon-orange) svg {
+  stroke: #fb923c !important;
+  color: #fb923c !important;
+}
+.VPHome .VPFeature:hover .icon:has(.icon-orange) {
+  background: rgba(251, 146, 60, 0.18) !important;
+  border-color: rgba(251, 146, 60, 0.35) !important;
+  box-shadow: 0 0 20px rgba(251, 146, 60, 0.1) !important;
+  transform: scale(1.05);
+}
+
+/* Fallback for icons without color class */
+.VPHome .VPFeature .icon:not(:has([class^="icon-"])) {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.VPHome .VPFeature .icon:not(:has([class^="icon-"])) svg {
+  stroke: #e2e8f0 !important;
+}
+
+/* Hero: hide default name, text, tagline since we use the custom hero component */
+.VPHome .VPHero .name {
+  display: none !important;
+}
+
+.VPHome .VPHero .text {
+  display: none !important;
+}
+
+.VPHome .VPHero .tagline {
+  display: none !important;
+}
+
+/* Hide default VitePress feature cards — replaced by FeatureGrid.vue */
+.VPHome .VPFeatures {
+  display: none !important;
+}
+
+/* No-image hero: center the content and give it room to breathe */
+.VPHome .VPHero .main {
+  max-width: 700px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* On wide screens VitePress splits hero into left (info) + right (image).
+   Without an image the layout becomes lopsided — force single-column center. */
+@media (min-width: 960px) {
+  .VPHome .VPHero .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .VPHome .VPHero .main {
+    max-width: 780px;
+  }
+}
+
+/* Add spacing between hero subtitle and action buttons */
+.VPHome .VPHero .actions {
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* Nav bar: make it dark & translucent on home pages */
+.VPNav {
+  transition: background 0.3s ease;
+}
+
+.is-home ~ .VPNav,
+body:has(.VPContent.is-home) .VPNav {
+  background: rgba(14, 14, 17, 0.6) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+body:has(.VPContent.is-home) .VPNavBar {
+  background: transparent !important;
+  border-bottom-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Nav bar title: use headline font */
+.VPNavBarTitle .title {
+  font-family: var(--vp-font-family-headline, "Space Grotesk", sans-serif) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+}
+
+/* Nav links: use headline font with tracking */
+.VPNavBarMenu a {
+  font-family: var(--vp-font-family-headline, "Space Grotesk", sans-serif) !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* Active nav link: brand color underline */
+.VPNavBarMenu a.active {
+  color: var(--vp-c-brand-1) !important;
+  border-bottom: 2px solid var(--vp-c-brand-1);
+  padding-bottom: 2px;
+}
+
+/* Dark body background & unified font for the home page */
+body:has(.VPContent.is-home) {
+  background: #0e0e11;
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Alt button: glassmorphic style on home */
+.VPHome .VPButton.alt {
+  background: rgba(31, 31, 35, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f0edf1 !important;
+}
+
+.VPHome .VPButton.alt:hover {
+  background: rgba(31, 31, 35, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Brand button: ensure it pops on dark bg with neon glow */
+.VPHome .VPButton.brand {
+  font-family: var(--vp-font-family-headline, "Space Grotesk", sans-serif) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.2px !important;
+  box-shadow: 0 0 20px rgba(232, 56, 74, 0.25);
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2)) !important;
+}
+
+.VPHome .VPButton.brand:hover {
+  box-shadow: 0 0 30px rgba(232, 56, 74, 0.4);
+}
+
+.VPHome .VPButton.alt {
+  font-family: var(--vp-font-family-headline, "Space Grotesk", sans-serif) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* Footer on home: dark bg */
+body:has(.VPContent.is-home) .VPFooter {
+  background: rgba(14, 14, 17, 0.95) !important;
+  border-top-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+body:has(.VPContent.is-home) .VPFooter .message,
+body:has(.VPContent.is-home) .VPFooter .copyright {
+  color: #666 !important;
+}
+
+/**
+ * Feature Showcase — scroll-based canvas darkening
+ * -------------------------------------------------------------------------- */
+
+/* The CSS custom property --showcase-scroll-progress is set by FeatureShowcase.vue
+   and read by AsciiBackground.vue's canvas rendering loop to draw a graduated
+   dark overlay directly onto the canvas. No CSS opacity manipulation needed. */
+html {
+  --showcase-scroll-progress: 0;
+}
+
+/**
+ * ASCII Fireworks — Bottom of Home Page
+ * -------------------------------------------------------------------------- */
+
+/* Ensure the fireworks section sits flush above the footer */
+body:has(.VPContent.is-home) .ascii-fireworks-wrapper {
+  margin-top: -1px;
+}
+
+/* Non-home pages: the wrapper is hidden via v-show, but ensure no layout shift */
+.ascii-fireworks-wrapper {
+  flex-shrink: 0;
+}

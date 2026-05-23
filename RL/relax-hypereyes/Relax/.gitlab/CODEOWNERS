@@ -1,0 +1,146 @@
+# =============================================================================
+# CODEOWNERS - Relax Project Code Ownership
+# =============================================================================
+#
+# This file defines who owns what parts of the codebase.
+# For more information about CODEOWNERS, see:
+# https://help.github.com/articles/about-codeowners/
+#
+# Format:
+# - Each line is a pattern followed by one or more owners
+# - The last matching pattern takes precedence
+# - Use @username for individuals
+#
+# GitHub usernames inferred from commit history:
+# - 宁本哲 / ningbenzhe (主要贡献者)
+# - 杨睿 / yangrui6 (主要贡献者)
+# - 李佳兴 / lijiaxing (主要贡献者)
+# - 于笑颜 / yuxiaoyan (主要贡献者)
+# - 张留杰 / zhangliujie (主要贡献者)
+#
+# =============================================================================
+
+# =============================================================================
+# Default Owners (Catch-all)
+# =============================================================================
+*                       @yangrui6 @ningbenzhe @lijiaxing
+
+# =============================================================================
+# Core Framework (relax/)
+# =============================================================================
+relax/                    @ningbenzhe @lijiaxing
+relax/core/               @ningbenzhe @zhangliujie
+relax/components/         @ningbenzhe @yangrui6
+relax/engine/             @ningbenzhe @yangrui6
+relax/backends/           @ningbenzhe @lijiaxing
+relax/distributed/        @ningbenzhe @yangrui6
+relax/entrypoints/        @ningbenzhe @lijiaxing
+relax/utils/metrics/      @yangrui6
+
+
+# =============================================================================
+# Transfer Queue (transfer_queue/)
+# =============================================================================
+transfer_queue/            @ningbenzhe @zhangliujie
+
+# =============================================================================
+# Examples & Scripts
+# =============================================================================
+examples/                  @yuxiaoyan
+scripts/                   @yangrui6
+configs/                   @ningbenzhe
+
+# =============================================================================
+# Documentation - English (docs/en/)
+# =============================================================================
+docs/                      @yangrui6 @ningbenzhe
+docs/en/                   @yangrui6
+docs/en/guide/             @yangrui6
+docs/en/guide/architecture.md               @ningbenzhe
+docs/en/guide/dataset-design.md             @ningbenzhe
+docs/en/guide/fully-async-training.md       @ningbenzhe
+docs/en/guide/health-check-manager.md       @ningbenzhe
+docs/en/guide/distributed-checkpoint.md     @ningbenzhe
+docs/en/guide/installation.md               @lijiaxing
+docs/en/guide/configuration.md              @lijiaxing
+docs/en/guide/introduction.md               @lijiaxing
+docs/en/guide/quick-start.md                @yuxiaoyan
+docs/en/guide/how-to-contribute.md          @yuxiaoyan
+docs/en/guide/customize-training.md         @lijiaxing
+docs/en/guide/debugging.md                  @lijiaxing
+docs/en/guide/oom-troubleshooting.md        @yangrui6
+docs/en/guide/performance-tuning.md         @yangrui6
+docs/en/guide/update-weights-pipeline.md    @yuxiaoyan
+docs/en/guide/autoscaler-k8s-keda.md        @yangrui6
+docs/en/guide/elastic-rollout.md            @yangrui6
+docs/en/guide/generative-reward-model.md    @yangrui6
+docs/en/guide/metrics-service-detailed.md   @yangrui6
+docs/en/guide/notification-system.md        @yangrui6
+docs/en/api/                @lijiaxing
+docs/en/examples/           @yuxiaoyan
+
+# =============================================================================
+# Documentation - Chinese (docs/zh/)
+# =============================================================================
+docs/                      @yangrui6 @ningbenzhe
+docs/zh/                   @yangrui6
+docs/zh/guide/             @yangrui6
+docs/zh/guide/architecture.md               @ningbenzhe
+docs/zh/guide/dataset-design.md             @ningbenzhe
+docs/zh/guide/fully-async-training.md       @ningbenzhe
+docs/zh/guide/health-check-manager.md       @ningbenzhe
+docs/zh/guide/distributed-checkpoint.md     @ningbenzhe
+docs/zh/guide/installation.md               @lijiaxing
+docs/zh/guide/configuration.md              @lijiaxing
+docs/zh/guide/introduction.md               @lijiaxing
+docs/zh/guide/quick-start.md                @yuxiaoyan
+docs/zh/guide/how-to-contribute.md          @yuxiaoyan
+docs/zh/guide/customize-training.md         @lijiaxing
+docs/zh/guide/debugging.md                  @lijiaxing
+docs/zh/guide/oom-troubleshooting.md        @yangrui6
+docs/zh/guide/performance-tuning.md         @yangrui6
+docs/zh/guide/update-weights-pipeline.md    @yuxiaoyan
+docs/zh/guide/autoscaler-k8s-keda.md        @yangrui6
+docs/zh/guide/elastic-rollout.md            @yangrui6
+docs/zh/guide/generative-reward-model.md    @yangrui6
+docs/zh/guide/metrics-service-detailed.md   @yangrui6
+docs/zh/guide/notification-system.md        @yangrui6
+docs/zh/api/                @lijiaxing
+docs/zh/examples/           @yuxiaoyan
+
+# =============================================================================
+# Documentation - Root
+# =============================================================================
+docs/en/index.md           @yangrui6
+docs/zh/index.md           @yangrui6
+README.md                  @zhangliujie
+README_zh.md               @zhangliujie
+
+# =============================================================================
+# Testing
+# =============================================================================
+tests/                     @ningbenzhe @lijiaxing @yangrui6
+
+# =============================================================================
+# CI/CD & DevOps
+# =============================================================================
+.github/          @ningbenzhe @yangrui6
+.gitlab/          @ningbenzhe @yangrui6
+
+# =============================================================================
+# Build & Configuration
+# =============================================================================
+docker/                    @lijiaxing
+Makefile                   @yangrui6
+pyproject.toml             @yangrui6
+setup.py                   @yangrui6
+requirements.txt           @yangrui6
+CONTRIBUTING.md            @yangrui6
+.pre-commit-config.yaml    @yangrui6
+
+# =============================================================================
+# Skills & Tools (internal development)
+# =============================================================================
+skills/            @yangrui6
+.opencode/         @yangrui6
+.sisyphus/         @yangrui6
