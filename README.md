@@ -111,10 +111,10 @@ $$
 ## 🗺️ Roadmap
 
 - [x] Paper figures and project page
+- [x] Cold-start (SFT) training code
+- [x] Dual-Grained Efficiency-Aware RL training code (TRACE + OPD)
 - [ ] IMEB benchmark release (data + evaluation scripts)
 - [ ] Parallel-Amenable Data Synthesis pipeline
-- [ ] Cold-start (SFT) training code
-- [ ] Dual-Grained Efficiency-Aware RL training code (TRACE + OPD)
 - [ ] HyperEyes-30B / 235B model weights
 - [ ] Inference / demo scripts
 
